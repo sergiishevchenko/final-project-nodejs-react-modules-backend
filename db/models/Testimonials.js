@@ -6,8 +6,8 @@ const Testimonials = sequelize.define("testimonial", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    owner: {
-        type: DataTypes.STRING,
+    ownerId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 })

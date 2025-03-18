@@ -6,10 +6,6 @@ import { emailRegex } from "../../constants/userConstants.js";
  * Cascade (belongsTo) was not added for all entities belonging to User, since user deletion functionality is not part of the requirements
  */
 const Users = sequelize.define("user", { 
-    id: { //please generate uuid when creating the user, type string was set for the compatibility with the data document
-        type: DataTypes.STRING,
-        primaryKey: true,
-    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
