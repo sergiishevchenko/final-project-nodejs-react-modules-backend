@@ -4,60 +4,61 @@ import Ingredients from "../models/Ingredients.js";
 
 export async function getRecipeById(req, res, next) {
   try {
-    const { id } = req.params; 
-    
-    const recipe = await Recipes.findByPk(id, {
-      include: [
-        {
-          model: Ingredients,
-          
-          through: {
-            attributes: ["measure"],
-          },
-        },
-      ],
-    });
+    const { id } = req.params;
+
+    const recipe = await Recipes.findByPk(id);
 
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }
 
-    const {
-      title,
-      category,
-      owner,
-      area,
-      instructions,
-      description,
-      thumb,
-      time,
-    } = recipe;
+    const ingredientIds = recipe.ingredientsList.map((ing) => ing.ingredientId);
 
-    
-    const ingredients = recipe.ingredients.map((ing) => {
+    const ingredients = await Ingredients.findAll({
+      where: { id: ingredientIds },
+    });
+
+    const ingredientsWithMeasure = ingredients.map((ing) => {
+      const found = recipe.ingredientsList.find((i) => i.ingredientId === ing.id);
       return {
+        id: ing.id,
         name: ing.name,
-        measure: ing.recipe_ingredient.measure, 
-        decs: ing.decs, 
-        img: ing.img,   
+        measure: found ? found.measure : "N/A",
+        decs: ing.decs,
+        img: ing.img,
       };
     });
 
-    const responseData = {
-      title,
-      category,
-      owner,        
-      area,
-      instructions, 
-      description,  
-      thumb,        
-      time,         
-      ingredients,
-    };
+    res.json({
+      status: "success",
+      data: {
+        title: recipe.title,
+        category: recipe.category,
+        owner: recipe.owner,
+        area: recipe.area,
+        instructions: recipe.instructions,
+        description: recipe.description,
+        thumb: recipe.thumb,
+        time: recipe.time,
+        ingredients: ingredientsWithMeasure,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getMyRecipes(req, res, next) {
+  try {
+    const userId = req.user.id; 
+
+    const myRecipes = await Recipes.findAll({
+      where: { owner: userId },
+    });
 
     res.json({
       status: "success",
-      data: responseData,
+      data: myRecipes,
     });
   } catch (error) {
     next(error);
