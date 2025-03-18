@@ -1,6 +1,7 @@
 import express from "express";
 
 import { getCurrentUser, login, logout, register } from "../controllers/authControllers.js";
+import { getRecipeById } from "../controllers/recipesController.js";
 import validateBody from "../helpers/validateBody.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { createUserSchema } from "../schemas/authSchemas.js";
@@ -15,5 +16,7 @@ authRouter.post("/login", validateBody(createUserSchema), ctrlWrapper(login));
 authRouter.post("/logout", authenticate, ctrlWrapper(logout));
 
 authRouter.get("/current", authenticate, ctrlWrapper(getCurrentUser)); //TODO
+
+authRouter.get("/recipe/:id", ctrlWrapper(getRecipeById));
 
 export default authRouter;
