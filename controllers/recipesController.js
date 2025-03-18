@@ -1,5 +1,5 @@
-import Recipes from "../models/Recipes.js";
-import Ingredients from "../models/Ingredients.js";
+import Recipes from "../db/models/Recipes.js";
+import Ingredients from "../db/models/Ingredients.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
