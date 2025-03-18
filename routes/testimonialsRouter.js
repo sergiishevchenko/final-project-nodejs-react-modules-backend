@@ -8,4 +8,4 @@ const testimonialsRouter = express.Router();
 
 testimonialsRouter.get("/", validateQuery(getTestimonialsSchema), getTestimonials);
 
-export default router;
+export default testimonialsRouter;
