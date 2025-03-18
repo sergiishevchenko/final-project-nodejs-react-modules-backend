@@ -6,16 +6,16 @@ const Recipes = sequelize.define("recipe", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  category: {
-    type: DataTypes.STRING,
+  categoryId: {
+    type: DataTypes.INTEGER, 
     allowNull: false,
   },
-  owner: {
-    type: DataTypes.STRING, 
+  ownerId: {
+    type: DataTypes.INTEGER, 
     allowNull: false,
   },
-  area: {
-    type: DataTypes.STRING,
+  areaId: {
+    type: DataTypes.INTEGER, 
     allowNull: false,
   },
   instructions: {
@@ -27,7 +27,7 @@ const Recipes = sequelize.define("recipe", {
     allowNull: false,
   },
   thumb: {
-    type: DataTypes.STRING, 
+    type: DataTypes.STRING,
     allowNull: false,
   },
   time: {
@@ -35,9 +35,11 @@ const Recipes = sequelize.define("recipe", {
     allowNull: false,
   },
   ingredientsList: {
-    type: DataTypes.JSON,
+    type: DataTypes.JSON, 
     allowNull: false,
   },
 });
+
+// Recipes.sync()
 
 export default Recipes;
