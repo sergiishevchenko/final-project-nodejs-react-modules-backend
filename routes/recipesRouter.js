@@ -9,7 +9,7 @@ const recipesRouter = Router();
 
 
 recipesRouter.get("/popular", ctrlWrapper(getPopular));
-
+recipesRouter.get("/", ctrlWrapper(searchRecipes));
 recipesRouter.post("/", authenticate, validateBody(recipeSchema), ctrlWrapper(addRecipe));
 recipesRouter.delete("/:id", authenticate, ctrlWrapper(removeRecipe));
 
