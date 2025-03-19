@@ -4,6 +4,6 @@ import getAllAreas from "../controllers/areasControllers.js";
 
 const areasRouter = Router();
 
-areasRouter.get("/", getAllAreas);
+areasRouter.get("/", ctrlWrapper(getAllAreas));
 
 export default areasRouter;
