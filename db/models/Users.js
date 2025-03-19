@@ -2,7 +2,10 @@ import sequelize from "../sequelize.js";
 import { DataTypes } from "sequelize";
 import { emailRegex } from "../../constants/userConstants.js";
 
-const Users = sequelize.define("user", {    // TODO
+/**
+ * Cascade (belongsTo) was not added for all entities belonging to User, since user deletion functionality is not part of the requirements
+ */
+const Users = sequelize.define("user", { 
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -24,8 +27,9 @@ const Users = sequelize.define("user", {    // TODO
         type: DataTypes.STRING,
         defaultValue: null,
     },
+
 })
 
-// Users.sync({force: true});
+// Users.sync();
 
 export default Users;

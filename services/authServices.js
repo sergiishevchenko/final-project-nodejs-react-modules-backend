@@ -4,6 +4,15 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 
+//test imports for create tables
+import Testimonials from "../db/models/Testimonials.js";
+import Categories from "../db/models/Categories.js";
+import Areas from "../db/models/Areas.js";
+import Ingredients from "../db/models/Ingredients.js";
+import Recipes from "../db/models/Recipes.js";
+import RecipesIngredients from "../db/models/RecipesIngredients.js";
+import UserFollowers from "../db/models/UserFollower.js";
+
 const { JWT_SECRET } = process.env;
 
 export const findUser = query => Users.findOne({

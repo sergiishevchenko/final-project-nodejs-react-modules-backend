@@ -4,6 +4,9 @@ import cors from "cors";
 import "dotenv/config";
 
 import authRouter from "./routes/authRouter.js";
+import categoriesRouter from "./routes/categoriesRouter.js";
+import areasRouter from "./routes/areasRouter.js";
+
 
 const app = express();
 
@@ -13,6 +16,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/api/auth", authRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/areas", areasRouter);
+
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

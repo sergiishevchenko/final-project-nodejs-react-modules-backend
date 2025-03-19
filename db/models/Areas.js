@@ -1,15 +1,13 @@
 import sequelize from "../sequelize.js";
 import { DataTypes } from "sequelize";
 
-const Ingredients = sequelize.define("ingredient", {
+const Areas = sequelize.define("area", {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    decs: DataTypes.TEXT,
-    img: DataTypes.STRING
 })
 
-// Ingredients.sync();
+// Areas.sync();
 
-export default Ingredients;
+export default Areas;
