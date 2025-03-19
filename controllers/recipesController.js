@@ -42,9 +42,8 @@ export const removeRecipe = async (req, res) => {
 
 
 export const searchRecipes = async (req, res) => {
-    try {
-        const { category, ingredient, area, page, size } = req.query;
-        const { limit, offset } = getPagination(page, size);
+    const { category, ingredient, area, page, limit: size } = req.query;
+    const { limit, offset } = getPagination(page, size);
 
         const whereClause = {};
         const include = [];
@@ -90,7 +89,4 @@ export const searchRecipes = async (req, res) => {
             totalPages: Math.ceil(count / limit),
             currentPage: page ? +page : 0,
         });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
 };
