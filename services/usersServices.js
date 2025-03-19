@@ -52,3 +52,17 @@ export const followUser = async (followerId, userId) => {
 
     return { message: 'Successfully followed the user' };
 }
+
+export const unfollowUser = async (followerId, userId) => {
+    const existingFollow = await UserFollower.findOne({
+        where: { followerId, userId },
+    });
+
+    if (!existingFollow) {
+        return { message: 'Already unfollow this user' };
+    }
+
+    await existingFollow.destroy();
+
+    return { message: 'Successfully unfollowed the user' };
+}
