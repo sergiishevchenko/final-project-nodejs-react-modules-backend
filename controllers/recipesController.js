@@ -1,45 +1,58 @@
+// controllers/recipeControllers.js
 import Recipes from "../db/models/Recipes.js";
+import Categories from "../db/models/Categories.js";
 import Ingredients from "../db/models/Ingredients.js";
-import { Op } from "sequelize";
+import Areas from "../db/models/Areas.js";
+import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import getPagination from "../helpers/getPagination.js";
 
-export const getRecipes = async (req, res) => {
-    const { category, ingredient, area, page = 1, limit = 10 } = req.query;
 
-    const where = {};
+export const searchRecipes = async (req, res) => {
+    const { category, ingredient, area, page, size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+
+    const whereClause = {};
+    const include = [];
+
     if (category) {
-        where.category = { [Op.iLike]: category };
-    }
-    if (area) {
-        where.area = { [Op.iLike]: area };
+        const categoryRecord = await Categories.findOne({ where: { name: category } });
+        if (categoryRecord) {
+            whereClause.categoryId = categoryRecord.id;
+        }
     }
 
-    const include = [
-        {
-            model: Ingredients,
-            through: { attributes: ["measure"] },
-            attributes: ["id", "name", "desc", "img"],
-        },
-    ];
+    if (area) {
+        const areaRecord = await Areas.findOne({ where: { name: area } });
+        if (areaRecord) {
+            whereClause.areaId = areaRecord.id;
+        }
+    }
 
     if (ingredient) {
-        include[0].where = { name: { [Op.iLike]: ingredient } };
+        const ingredientRecord = await Ingredients.findOne({ where: { name: ingredient } });
+        if (ingredientRecord) {
+            include.push({
+                model: Ingredients,
+                through: {
+                    model: RecipesIngredients,
+                    where: { ingredientId: ingredientRecord.id },
+                },
+                as: 'ingredients'
+            });
+        }
     }
 
-    const { limit: queryLimit, offset } = getPagination(page - 1, limit);
-
     const { count, rows } = await Recipes.findAndCountAll({
-        where,
-        include,
-        limit: queryLimit,
+        where: whereClause,
+        include: include,
+        limit,
         offset,
-        attributes: ["id", "title", "category", "area", "instructions", "description", "thumb", "time"],
     });
 
     res.json({
-        total: count,
-        page: parseInt(page),
-        limit: parseInt(limit),
+        totalItems: count,
         recipes: rows,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page ? +page : 0,
     });
 };

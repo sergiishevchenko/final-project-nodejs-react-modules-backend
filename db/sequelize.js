@@ -3,20 +3,19 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = new Sequelize({
-    dialect: process.env.DATABASE_DIALECT,
-    username: process.env.DATABASE_USERNAME,
-    host: process.env.DATABASE_HOST,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
-    port: process.env.DATABASE_PORT,
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: "postgres",
     dialectOptions: {
-        ssl: process.env.DATABASE_SSL !== '0',
+      ssl: false, // Вимкнути SSL для локального сервера
     },
-    define: {
-        timestamps: false,
-    },
-});
+  }
+);
 
 try {
   await sequelize.authenticate();
