@@ -14,6 +14,11 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/api/auth", authRouter);
+app.use("/api/recipes", recipesRouter);
+app.use("/api/ingredients", ingredientsRouter);
+app.use("/api/testimonials", testimonialsRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/areas", areasRouter);
 
 app.use("/api/recipes", recipesRouter);
 

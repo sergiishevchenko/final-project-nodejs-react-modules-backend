@@ -1,61 +1,57 @@
 import Recipes from "../db/models/Recipes.js";
+import Categories from "../db/models/Categories.js";
 import Ingredients from "../db/models/Ingredients.js";
-import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import HttpError from "../helpers/HttpError.js";
+import Areas from "../db/models/Areas.js";
+import RecipesIngredients from "../db/models/RecipesIngredients.js";
+import getPagination from "../helpers/getPagination.js";
 
 
-const getRecipeById = async (req, res) => {
-  const { id } = req.params;
+export const searchRecipes = async (req, res) => {
+    const { category, ingredient, area, page, limit: size } = req.query;
+    const { limit, offset } = getPagination(page, size);
 
-  const recipe = await Recipes.findByPk(id);
-  if (!recipe) {
-    throw HttpError(404, "Recipe not found");
-  }
+    const whereClause = {};
+    const include = [];
 
-  const ingredientIds = recipe.ingredientsList.map((ing) => ing.ingredientId);
-  const ingredients = await Ingredients.findAll({ where: { id: ingredientIds } });
+    if (category) {
+        const categoryRecord = await Categories.findOne({ where: { name: category } });
+        if (categoryRecord) {
+            whereClause.categoryId = categoryRecord.id;
+        }
+    }
 
-  const ingredientsWithMeasure = ingredients.map((ing) => {
-    const found = recipe.ingredientsList.find((i) => i.ingredientId === ing.id);
-    return {
-      id: ing.id,
-      name: ing.name,
-      measure: found ? found.measure : "N/A",
-      decs: ing.decs,
-      img: ing.img,
-    };
-  });
+    if (area) {
+        const areaRecord = await Areas.findOne({ where: { name: area } });
+        if (areaRecord) {
+            whereClause.areaId = areaRecord.id;
+        }
+    }
 
-  res.json({
-    status: "success",
-    data: {
-      title: recipe.title,
-      category: recipe.category,
-      owner: recipe.owner,
-      area: recipe.area,
-      instructions: recipe.instructions,
-      description: recipe.description,
-      thumb: recipe.thumb,
-      time: recipe.time,
-      ingredients: ingredientsWithMeasure,
-    },
-  });
-};
+    if (ingredient) {
+        const ingredientRecord = await Ingredients.findOne({ where: { name: ingredient } });
+        if (ingredientRecord) {
+            include.push({
+                model: Ingredients,
+                through: {
+                    model: RecipesIngredients,
+                    where: { ingredientId: ingredientRecord.id },
+                },
+                as: 'ingredients'
+            });
+        }
+    }
 
-const getMyRecipes = async (req, res) => {
-  const userId = req.user.id;
+    const { count, rows } = await Recipes.findAndCountAll({
+        where: whereClause,
+        include: include,
+        limit,
+        offset,
+    });
 
-  const myRecipes = await Recipes.findAll({
-    where: { owner: userId },
-  });
-
-  res.json({
-    status: "success",
-    data: myRecipes,
-  });
-};
-
-export default {
-  getRecipeById: ctrlWrapper(getRecipeById),
-  getMyRecipes: ctrlWrapper(getMyRecipes),
+    res.json({
+        totalItems: count,
+        recipes: rows,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page ? +page : 0,
+    });
 };

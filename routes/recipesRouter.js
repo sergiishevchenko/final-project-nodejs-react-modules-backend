@@ -1,11 +1,9 @@
-import { Router } from "express";
-import recipesController from "../controllers/recipesController.js";
-import authenticate from "../middlewares/authenticate.js";
+import express from "express";
+import { searchRecipes } from "../controllers/recipesController.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
-const recipesRouter = Router();
+const recipesRouter = express.Router();
 
-recipesRouter.get("/:id", recipesController.getRecipeById);
-
-recipesRouter.get("/my", authenticate, recipesController.getMyRecipes);
+recipesRouter.get("/", ctrlWrapper(searchRecipes));
 
 export default recipesRouter;
