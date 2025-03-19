@@ -11,7 +11,6 @@ import categoriesRouter from "./routes/categoriesRouter.js";
 import areasRouter from "./routes/areasRouter.js";
 import usersRouter from "./routes/usersRouter.js"; 
 
-
 const app = express();
 
 app.use(morgan("tiny"));
