@@ -62,11 +62,13 @@ export const logoutUser = async id => {
     });
 };
 
-export const getUser = async email => {
-    const user = findUser(email);
-    if (!user) {
+export const updateUserAvatar = async (email, avatar) => {
+    const user = await findUser(email);
+        if (!user) {
         throw HttpError(401, "Not authorized");
     };
 
-    return user;
-};
+    return user.update({avatar}, {
+        returning: true,
+    })
+}

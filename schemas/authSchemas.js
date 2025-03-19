@@ -11,3 +11,7 @@ export const loginUserSchema = Joi.object({
     email: Joi.string().pattern(emailRegex).required(),
     password: Joi.string().min(6).required(),
 })
+
+export const followUserSchema = Joi.object({
+    userId: Joi.number().integer().positive().required().options({ convert: false })
+});
