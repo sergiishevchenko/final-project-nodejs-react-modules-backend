@@ -8,7 +8,7 @@ const Recipes = sequelize.define("recipe", {
     },
     categoryId: {
         type: DataTypes.INTEGER,
-        allowNull: false,   
+        allowNull: false,
     },
     ownerId: {
         type: DataTypes.INTEGER,
@@ -24,15 +24,15 @@ const Recipes = sequelize.define("recipe", {
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false     
+        allowNull: false
     },
     thumb: {
         type: DataTypes.STRING,
-        allowNull: false 
+        allowNull: false
     },
     time: {
         type: DataTypes.INTEGER,
-        allowNull: false 
+        allowNull: false
     },
     favoriteCount: {
         type: DataTypes.INTEGER,
