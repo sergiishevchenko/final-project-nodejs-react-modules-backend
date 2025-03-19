@@ -5,6 +5,7 @@ import Ingredients from "../db/models/Ingredients.js";
 import Areas from "../db/models/Areas.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import getPagination from "../helpers/getPagination.js";
+import { Op } from "sequelize";
 
 
 export const searchRecipes = async (req, res) => {
@@ -31,14 +32,21 @@ export const searchRecipes = async (req, res) => {
     if (ingredient) {
         const ingredientRecord = await Ingredients.findOne({ where: { name: ingredient } });
         if (ingredientRecord) {
-            include.push({
-                model: Ingredients,
-                through: {
-                    model: RecipesIngredients,
-                    where: { ingredientId: ingredientRecord.id },
-                },
-                as: 'ingredients'
+            const recipeIds = await RecipesIngredients.findAll({
+                where: { ingredientId: ingredientRecord.id },
+                attributes: ['recipeId']
             });
+
+            if (recipeIds.length > 0) {
+                whereClause.id = { [Op.in]: recipeIds.map(item => item.recipeId) };
+            } else {
+                return res.json({
+                    totalItems: 0,
+                    recipes: [],
+                    totalPages: 0,
+                    currentPage: page ? +page : 0,
+                });
+            }
         }
     }
 
