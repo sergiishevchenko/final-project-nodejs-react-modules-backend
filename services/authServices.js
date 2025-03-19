@@ -70,3 +70,14 @@ export const getUser = async email => {
 
     return user;
 };
+
+export const updateUserAvatar = async (email, avatar) => {
+    const user = await findUser(email);
+        if (!user) {
+        throw HttpError(401, "Not authorized");
+    };
+
+    return user.update({avatar}, {
+        returning: true,
+    })
+}
