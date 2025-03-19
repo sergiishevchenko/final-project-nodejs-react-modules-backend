@@ -4,6 +4,9 @@ import cloudinary from "../helpers/cloudinary.js";
 import HttpError from "../helpers/HttpError.js";
 import { followUser } from "../services/usersService.js";
 
+/**
+ * Реєстрація користувача
+ */
 export const register = async (req, res) => {
     const result = await addUser(req.body);
 
@@ -15,8 +18,11 @@ export const register = async (req, res) => {
     });
 };
 
+/**
+ * Логін користувача
+ */
 export const login = async (req, res) => {
-    const result = await loginUser(req.body)
+    const result = await loginUser(req.body);
 
     res.json({
         token: result.token,
@@ -24,27 +30,56 @@ export const login = async (req, res) => {
             email: result.email,
             subscription: result.subscription,
         }
-    })
-}
+    });
+};
 
+/**
+ * Логаут користувача
+ */
 export const logout = async (req, res) => {
     const { id } = req.user;
-    await logoutUser({id});
+    await logoutUser({ id });
 
     res.status(204).json({
         message: "No Content"
     });
-}
+};
 
+/**
+ * Отримання поточного користувача (getCurrentUser)
+ */
+export const getCurrentUser = async (req, res, next) => {
+    try {
+        const { email } = req.user;
+        const user = await getUser({ email });
+
+        if (!user) {
+            throw HttpError(404, "User not found");
+        }
+
+        res.json({
+            email: user.email,
+            avatar: user.avatar,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Оновлення аватарки
+ */
 export const updateAvatar = async (req, res) => {
     const { email } = req.user;
     if (!req.file) {
         throw HttpError(400, "No file to upload");
     }
-    const {url} = await cloudinary.uploader.upload(req.file.path, {
+
+    const { url } = await cloudinary.uploader.upload(req.file.path, {
         folder: "avatars",
         use_filename: true,
-    })
+    });
+
     const avatar = url;
     await fs.unlink(req.file.path);
 
@@ -53,12 +88,15 @@ export const updateAvatar = async (req, res) => {
     res.json({
         avatar: result.avatar
     });
-}
+};
 
+/**
+ * Функція для підписки на користувача
+ */
 export const follow = async (req, res) => {
     const followerId = req.user.id;
     const { userId } = req.body;
 
     const result = await followUser(followerId, userId);
     res.status(200).json(result);
-}
+};

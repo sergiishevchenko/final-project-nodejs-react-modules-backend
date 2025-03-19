@@ -5,6 +5,7 @@ import Areas from "../db/models/Areas.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import getPagination from "../helpers/getPagination.js";
 import HttpError from "../helpers/HttpError.js";
+import { createRecipe, getPopularRecipes, deleteRecipe } from "../services/recipesServices.js";
 
 /**
  * Отримання рецепта за ID (публічний)
