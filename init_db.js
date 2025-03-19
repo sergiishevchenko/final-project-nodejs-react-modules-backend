@@ -27,6 +27,7 @@ const importData = async () => {
         const testimonialsData = loadJSON('testimonials.json');
         const recipesData = loadJSON('recipes.json');
 
+
         const idMap = {
             categories: {},
             areas: {},
@@ -34,7 +35,7 @@ const importData = async () => {
             users: {},
             recipes: {},
         };
-        
+
         for (const category of categoriesData) {
             const newCategory = await Categories.create({ name: category.name });
             idMap.categories[category.name] = newCategory.id;
