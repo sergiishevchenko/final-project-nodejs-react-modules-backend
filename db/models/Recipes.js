@@ -34,6 +34,10 @@ const Recipes = sequelize.define("recipe", {
         type: DataTypes.INTEGER,
         allowNull: false 
     },
+    favoriteCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    }
 })
 
 // Recipes.sync();

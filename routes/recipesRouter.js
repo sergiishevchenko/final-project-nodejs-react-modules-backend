@@ -1,13 +1,16 @@
-import express from "express";
-import { getPopularRecipes } from "../controllers/recipesController.js";
-import { createRecipe } from "../controllers/recipesController.js";
-import { deleteRecipe } from "../controllers/recipesController.js";
+import { Router } from "express";
+import { getPopular, addRecipe, removeRecipe } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import validateBody from "../helpers/validateBody.js";
+import { recipeSchema } from "../schemas/recipeSchemas.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
-const recipesRouter = express.Router();
+const recipesRouter = Router();
 
-recipesRouter.get("/popular", getPopularRecipes);
-recipesRouter.post("/", authenticate, createRecipe);
-recipesRouter.delete("/:id", authenticate, deleteRecipe);
+
+recipesRouter.get("/popular", ctrlWrapper(getPopular));
+
+recipesRouter.post("/", authenticate, validateBody(recipeSchema), ctrlWrapper(addRecipe));
+recipesRouter.delete("/:id", authenticate, ctrlWrapper(removeRecipe));
 
 export default recipesRouter;
