@@ -2,6 +2,7 @@ import { addUser, getUser, loginUser, logoutUser, updateUserAvatar } from "../se
 import fs from "node:fs/promises";
 import cloudinary from "../helpers/cloudinary.js";
 import HttpError from "../helpers/HttpError.js";
+import { followUser } from "../services/usersService.js";
 
 export const register = async (req, res) => {
     const result = await addUser(req.body);
@@ -35,16 +36,6 @@ export const logout = async (req, res) => {
     });
 }
 
-export const getCurrentUser = async (req, res) => {
-    const { email } = req.user;
-    const result = await getUser({ email });
-
-    res.json({
-        email: result.email,
-        subscription: result.subscription
-    })
-} 
-
 export const updateAvatar = async (req, res) => {
     const { email } = req.user;
     if (!req.file) {
@@ -62,4 +53,12 @@ export const updateAvatar = async (req, res) => {
     res.json({
         avatar: result.avatar
     });
+}
+
+export const follow = async (req, res) => {
+    const followerId = req.user.id;
+    const { userId } = req.body;
+
+    const result = await followUser(followerId, userId);
+    res.status(200).json(result);
 }

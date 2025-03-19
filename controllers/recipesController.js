@@ -157,3 +157,43 @@ export const searchRecipes = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * Отримання популярних рецептів
+ */
+export const getPopular = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+        const recipes = await getPopularRecipes(limit);
+        res.json(recipes);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * Додавання нового рецепта
+ */
+export const addRecipe = async (req, res) => {
+    try {
+        const { id: userId } = req.user;
+        const newRecipe = await createRecipe(req.body, userId);
+        res.status(201).json(newRecipe);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * Видалення рецепта
+ */
+export const removeRecipe = async (req, res) => {
+    try {
+        const { id: recipeId } = req.params;
+        const { id: userId } = req.user;
+        const result = await deleteRecipe(recipeId, userId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
