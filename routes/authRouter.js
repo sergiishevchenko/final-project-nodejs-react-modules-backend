@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getCurrentUser, login, logout, register, updateAvatar, follow } from "../controllers/authControllers.js";
+import { login, logout, register, updateAvatar, follow } from "../controllers/authControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { createUserSchema, loginUserSchema, followUserSchema } from "../schemas/authSchemas.js";

@@ -1,8 +1,8 @@
-import { addUser, getUser, loginUser, logoutUser, updateUserAvatar } from "../services/authServices.js";
+import { addUser, loginUser, logoutUser, updateUserAvatar } from "../services/authServices.js";
 import fs from "node:fs/promises";
 import cloudinary from "../helpers/cloudinary.js";
 import HttpError from "../helpers/HttpError.js";
-import { followUser } from "../services/usersService.js";
+import { followUser } from "../services/usersServices.js";
 
 export const register = async (req, res) => {
     const result = await addUser(req.body);
