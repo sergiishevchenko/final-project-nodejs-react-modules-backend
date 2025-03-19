@@ -33,21 +33,17 @@ export const createRecipe = async (recipeData, userId) => {
     return newRecipe;
 };
 
+
 export const deleteRecipe = async (recipeId, userId) => {
-    const recipe = await Recipes.findByPk(recipeId);
-
-    if (!recipe) {
-        throw HttpError(404, "Recipe not found");
-    }
-
-    if (recipe.ownerId !== userId) {
-        throw HttpError(403, "You can only delete your own recipes");
-    }
-
-    await RecipesIngredients.destroy({
-        where: { recipeId }
+    const recipe = await Recipes.findOne({
+        where: { id: recipeId, ownerId: userId }
     });
 
+    if (!recipe) {
+        throw HttpError(404, "Recipe not found or you do not have permission to delete it");
+    }
+
+    await RecipesIngredients.destroy({ where: { recipeId } });
     await recipe.destroy();
 
     return { message: "Recipe deleted successfully" };

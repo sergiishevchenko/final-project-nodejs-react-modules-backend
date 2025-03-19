@@ -9,7 +9,6 @@ import ingredientsRouter from "./routes/ingredientsRouter.js";
 import testimonialsRouter from "./routes/testimonialsRouter.js";
 import categoriesRouter from "./routes/categoriesRouter.js";
 import areasRouter from "./routes/areasRouter.js";
-import recipesRouter from "./routes/recipesRouter.js";
 
 
 const app = express();
