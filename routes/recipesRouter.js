@@ -1,5 +1,5 @@
 import express from "express";
-import { getPopular, addRecipe, removeRecipe, searchRecipes } from "../controllers/recipesController.js";
+import { getPopular, addRecipe, removeRecipe, searchRecipes } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../helpers/validateBody.js";
 import { recipeSchema } from "../schemas/recipeSchemas.js";

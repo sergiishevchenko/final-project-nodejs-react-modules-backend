@@ -1,8 +1,6 @@
 import Recipes from "../db/models/Recipes.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import HttpError from "../helpers/HttpError.js";
-import { Op } from "sequelize";
-import sequelize from "../db/sequelize.js";
 
 
 export const getPopularRecipes = async (limit = 10) => {
