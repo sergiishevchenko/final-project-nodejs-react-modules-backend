@@ -35,16 +35,6 @@ export const logout = async (req, res) => {
     });
 }
 
-export const getCurrentUser = async (req, res) => {
-    const { email } = req.user;
-    const result = await getUser({ email });
-
-    res.json({
-        email: result.email,
-        subscription: result.subscription
-    })
-} 
-
 export const updateAvatar = async (req, res) => {
     const { email } = req.user;
     if (!req.file) {

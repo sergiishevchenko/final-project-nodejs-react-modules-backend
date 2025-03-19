@@ -15,8 +15,6 @@ authRouter.post("/login", validateBody(loginUserSchema), ctrlWrapper(login));
 
 authRouter.post("/logout", authenticate, ctrlWrapper(logout));
 
-authRouter.get("/current", authenticate, ctrlWrapper(getCurrentUser)); //TODO
-
 authRouter.patch("/avatars", authenticate, uploadAvatar.single("avatar"), ctrlWrapper(updateAvatar));
 
 export default authRouter;
