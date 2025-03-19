@@ -1,7 +1,8 @@
-import { addUser, getUser, loginUser, logoutUser } from "../services/authServices.js";
-import path from "node:path";
-
-// const avatarsPath = path.resolve("public", "avatars");
+import { addUser, getUser, loginUser, logoutUser, updateUserAvatar } from "../services/authServices.js";
+import fs from "node:fs/promises";
+import cloudinary from "../helpers/cloudinary.js";
+import HttpError from "../helpers/HttpError.js";
+import { followUser } from "../services/usersService.js";
 
 export const register = async (req, res) => {
     const result = await addUser(req.body);
@@ -44,3 +45,30 @@ export const getCurrentUser = async (req, res) => {
         subscription: result.subscription
     })
 } 
+
+export const updateAvatar = async (req, res) => {
+    const { email } = req.user;
+    if (!req.file) {
+        throw HttpError(400, "No file to upload");
+    }
+    const {url} = await cloudinary.uploader.upload(req.file.path, {
+        folder: "avatars",
+        use_filename: true,
+    })
+    const avatar = url;
+    await fs.unlink(req.file.path);
+
+    const result = await updateUserAvatar({ email }, avatar);
+
+    res.json({
+        avatar: result.avatar
+    });
+}
+
+export const follow = async (req, res) => {
+    const followerId = req.user.id;
+    const { userId } = req.body;
+
+    const result = await followUser(followerId, userId);
+    res.status(200).json(result);
+}

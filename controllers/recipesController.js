@@ -8,7 +8,7 @@ import getPagination from "../helpers/getPagination.js";
 
 
 export const searchRecipes = async (req, res) => {
-    const { category, ingredient, area, page, size } = req.query;
+    const { category, ingredient, area, page, limit: size } = req.query;
     const { limit, offset } = getPagination(page, size);
 
     const whereClause = {};
