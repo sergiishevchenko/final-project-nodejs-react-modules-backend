@@ -6,7 +6,7 @@ const Ingredients = sequelize.define("ingredient", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    decs: DataTypes.TEXT,
+    desc: DataTypes.TEXT,
     img: DataTypes.STRING
 })
 
