@@ -5,7 +5,7 @@ import Areas from "../db/models/Areas.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import getPagination from "../helpers/getPagination.js";
 import HttpError from "../helpers/HttpError.js";
-import { createRecipe, getPopularRecipes, deleteRecipe } from "../services/recipesServices.js";
+import { createRecipe, getPopularRecipes, deleteRecipe, getUserRecipesService } from "../services/recipesServices.js";
 import { Op } from "sequelize";
 
 /**
@@ -188,4 +188,30 @@ export const searchRecipes = async (req, res) => {
         totalPages: limit > 0 ? Math.ceil(count / limit) : 1,
         currentPage: page ? +page : 1,
     });
+};
+
+export const getUserRecipes = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const { page = 1, limit = 10 } = req.query;
+
+        const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(userId, page, limit);
+
+        if (!recipes.length) {
+            throw HttpError(404, "This user has no recipes");
+        }
+
+        res.json({
+            status: "success",
+            data: recipes,
+            pagination: {
+                total: count,
+                page: currentPage,
+                totalPages: Math.ceil(count / perPage),
+                limit: perPage,
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
 };
