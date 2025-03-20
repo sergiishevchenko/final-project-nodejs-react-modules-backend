@@ -149,21 +149,31 @@ export const getRecipeById = async (req, res, next) => {
 /**
  * Отримання власних рецептів користувача (приватний)
  */
+/**
+ * Отримання власних рецептів користувача (приватний) з пагінацією
+ */
 export const getMyRecipes = async (req, res, next) => {
     try {
         const userId = req.user.id;
+        const { page, limit: size } = req.query;
+        const { limit, offset } = getPagination(page, size); //
 
-        const myRecipes = await Recipes.findAll({
+        const { count, rows } = await Recipes.findAndCountAll({
             where: { ownerId: userId },
+            limit,
+            offset,
         });
 
-        if (!myRecipes.length) {
+        if (!rows.length) {
             throw HttpError(404, "You have no recipes");
         }
 
         res.json({
             status: "success",
-            data: myRecipes,
+            totalItems: count,
+            recipes: rows,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page ? +page : 1, 
         });
     } catch (error) {
         next(error);
