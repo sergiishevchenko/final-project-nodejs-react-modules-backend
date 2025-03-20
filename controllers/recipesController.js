@@ -241,14 +241,10 @@ export const getUserRecipes = async (req, res, next) => {
         }
 
         res.json({
-            status: "success",
-            data: recipes,
-            pagination: {
-                total: count,
-                page: currentPage,
-                totalPages: Math.ceil(count / perPage),
-                limit: perPage,
-            },
+            totalItems: count,
+            recipes: recipes,
+            totalPages: Math.ceil(count / perPage),
+            currentPage: currentPage,
         });
     } catch (error) {
         next(error);
