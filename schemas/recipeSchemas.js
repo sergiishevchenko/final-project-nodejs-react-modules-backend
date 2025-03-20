@@ -7,11 +7,14 @@ export const recipeSchema = Joi.object({
     time: Joi.number().integer().min(1).required(),
     categoryId: Joi.number().integer().required(),
     areaId: Joi.number().integer().required(),
-    thumb: Joi.string().required(),
-    ingredients: Joi.array().items(
-        Joi.object({
-            id: Joi.number().integer().required(),
-            measure: Joi.string().allow('').optional()
-        })
-    ).min(1).required()
+    thumb: Joi.string().optional(),
+    ingredients: Joi.alternatives().try(
+        Joi.array().items(
+            Joi.object({
+                id: Joi.number().integer().required(),
+                measure: Joi.string().allow('').optional()
+            })
+        ).min(1).required(),
+        Joi.string().required()
+    )
 });
