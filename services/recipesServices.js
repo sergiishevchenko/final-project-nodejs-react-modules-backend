@@ -1,15 +1,27 @@
 import Recipes from "../db/models/Recipes.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import HttpError from "../helpers/HttpError.js";
+import Ingredients from "../db/models/Ingredients.js";
+import {Op} from "sequelize";
 
 
 export const getPopularRecipes = async (limit = 10) => {
-    const popularRecipes = await Recipes.findAll({
-        order: [["favoriteCount", "DESC"]],
-        limit: parseInt(limit, 10)
+    const hasFavorites = await Recipes.findOne({
+        where: { favoriteCount: { [Op.gt]: 0 } }
+
     });
 
-    return popularRecipes;
+    if (hasFavorites) {
+        return await Recipes.findAll({
+            order: [["favoriteCount", "DESC"]],
+            limit: parseInt(limit, 10)
+        });
+    } else {
+        return await Recipes.findAll({
+            order: [["id", "ASC"]],
+            limit: 4
+        });
+    }
 };
 
 export const createRecipe = async (recipeData, userId) => {
@@ -28,8 +40,35 @@ export const createRecipe = async (recipeData, userId) => {
         await RecipesIngredients.bulkCreate(ingredientRelations);
     }
 
-    return newRecipe;
+    const recipeWithIngredients = await Recipes.findByPk(newRecipe.id, {
+        include: [
+            {
+                model: Ingredients,
+                through: { attributes: ["measure"] }
+            }
+        ]
+    });
+
+    return {
+        id: recipeWithIngredients.id,
+        title: recipeWithIngredients.title,
+        description: recipeWithIngredients.description,
+        instructions: recipeWithIngredients.instructions,
+        time: recipeWithIngredients.time,
+        categoryId: recipeWithIngredients.categoryId,
+        areaId: recipeWithIngredients.areaId,
+        thumb: recipeWithIngredients.thumb,
+        ingredients: recipeWithIngredients.ingredients.map(ingredient => ({
+            id: ingredient.id,
+            name: ingredient.name,
+            desc: ingredient.desc,
+            img: ingredient.img,
+            measure: ingredient.recipe_ingredient.measure
+        }))
+    };
 };
+
+
 
 export const deleteRecipe = async (recipeId, userId) => {
     const recipe = await Recipes.findOne({

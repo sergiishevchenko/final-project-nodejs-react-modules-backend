@@ -12,6 +12,7 @@ import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../helpers/validateBody.js";
 import { recipeSchema } from "../schemas/recipeSchemas.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import uploadThumb from "../middlewares/uploadThumb.js";
 
 const recipesRouter = express.Router();
 
