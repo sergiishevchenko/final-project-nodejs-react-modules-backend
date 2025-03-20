@@ -2,7 +2,7 @@ import { addUser, loginUser, logoutUser, updateUserAvatar } from "../services/au
 import fs from "node:fs/promises";
 import cloudinary from "../helpers/cloudinary.js";
 import HttpError from "../helpers/HttpError.js";
-import { followUser } from "../services/usersServices.js";
+import { followUser, unfollowUser } from "../services/usersServices.js";
 
 export const register = async (req, res) => {
     const result = await addUser(req.body);
@@ -60,5 +60,13 @@ export const follow = async (req, res) => {
     const { userId } = req.body;
 
     const result = await followUser(followerId, userId);
+    res.status(200).json(result);
+}
+
+export const unfollow = async (req, res) => {
+    const followerId = req.user.id;
+    const { userId } = req.body;
+
+    const result = await unfollowUser(followerId, userId);
     res.status(200).json(result);
 }
