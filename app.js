@@ -5,7 +5,7 @@ import "dotenv/config";
 
 import authRouter from "./routes/authRouter.js";
 import recipesRouter from "./routes/recipesRouter.js";
-import ingredientsRouter from "./routes/ingredientsRouter.js";
+import ingredientsRouter from "./routes/ingredientsRouter.js"; 
 import testimonialsRouter from "./routes/testimonialsRouter.js";
 import categoriesRouter from "./routes/categoriesRouter.js";
 import areasRouter from "./routes/areasRouter.js";

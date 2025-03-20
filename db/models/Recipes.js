@@ -1,5 +1,7 @@
 import sequelize from "../sequelize.js";
 import { DataTypes } from "sequelize";
+import Categories from "./Categories.js"; // Імпортуємо модель Categories
+import Areas from "./Areas.js"; // Імпортуємо модель Areas
 
 const Recipes = sequelize.define("recipe", {
     title: {
@@ -38,7 +40,11 @@ const Recipes = sequelize.define("recipe", {
         type: DataTypes.INTEGER,
         defaultValue: 0
     }
-})
+});
+
+// Додаємо асоціації
+Recipes.belongsTo(Categories, { foreignKey: "categoryId", as: "category" });
+Recipes.belongsTo(Areas, { foreignKey: "areaId", as: "area" });
 
 // Recipes.sync();
 
