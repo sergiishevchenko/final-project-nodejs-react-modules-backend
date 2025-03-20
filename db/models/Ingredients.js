@@ -6,7 +6,7 @@ const Ingredients = sequelize.define("ingredient", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    decs: {  // Назва така ж, як у PostgreSQL
+    desc: {
         type: DataTypes.TEXT,
         allowNull: false,
     },
@@ -16,11 +16,11 @@ const Ingredients = sequelize.define("ingredient", {
     timestamps: false,
 });
 
-// Додаємо віртуальне поле `description`, яке мапиться на `decs`
+// Додаємо віртуальне поле `description`, яке мапиться на `desc`
 Ingredients.prototype.toJSON = function () {
     const values = Object.assign({}, this.get());
-    values.description = values.decs;  // Підставляємо `decs` як `description`
-    delete values.decs;  // Прибираємо `decs` з відповіді
+    values.description = values.desc;  // Підставляємо `desc` як `description`
+    delete values.desc;  // Прибираємо `desc` з відповіді
     return values;
 };
 
