@@ -1,13 +1,30 @@
-import sequelize from "../sequelize.js";
-import { DataTypes } from "sequelize";
-import Users from "./Users.js";
-import Recipes from "./Recipes.js";
+import sequelize from '../sequelize.js';
+import { DataTypes } from 'sequelize';
+import Users from './Users.js';
+import Recipes from './Recipes.js';
 
-const FavoriteRecipes = sequelize.define("favorite_recipe", {});
+const FavoriteRecipes = sequelize.define('favorite_recipe', {
+    userId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+            model: Users,
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+    },
+    recipeId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+            model: Recipes,
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+    },
+});
 
-Users.belongsToMany(Recipes, { through: FavoriteRecipes, foreignKey: "userId" });
-Recipes.belongsToMany(Users, { through: FavoriteRecipes, foreignKey: "recipeId" });
-
-// FavoriteRecipes.sync();
+FavoriteRecipes.belongsTo(Recipes, { foreignKey: 'recipeId' });
+FavoriteRecipes.belongsTo(Users, { foreignKey: 'userId' });
 
 export default FavoriteRecipes;
