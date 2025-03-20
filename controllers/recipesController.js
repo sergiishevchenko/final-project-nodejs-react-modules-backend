@@ -146,17 +146,14 @@ export const searchRecipes = async (req, res) => {
         if (categoryRecord) {
             whereClause.categoryId = categoryRecord.id;
         }
-    } else {
-        throw HttpError(404, "Category not found");
-    }
+    } 
+    
     if (area) {
         const areaRecord = await Areas.findOne({ where: { name: area } });
         if (areaRecord) {
             whereClause.areaId = areaRecord.id;
         }
-    } else {
-        throw HttpError(404, "Area not found");
-    }
+    } 
 
     if (ingredient) {
         const ingredientRecord = await Ingredients.findOne({ where: { name: ingredient } });
@@ -177,21 +174,18 @@ export const searchRecipes = async (req, res) => {
                 });
             }
         }
-    } else {
-        throw HttpError(404, "Ingredient not found");
     }
-        
-        const { count, rows } = await Recipes.findAndCountAll({
-            where: whereClause,
-            include: include.length > 0 ? include : undefined,
-            limit,
-            offset,
-        });
-
-        res.json({
-            totalItems: count,
-            recipes: rows,
-            totalPages: limit > 0 ? Math.ceil(count / limit) : 1,
-            currentPage: page ? +page : 1,
-        });
+            
+    const { count, rows } = await Recipes.findAndCountAll({
+        where: whereClause,
+        include: include.length > 0 ? include : undefined,
+        limit,
+        offset,
+    });
+    res.json({
+        totalItems: count,
+        recipes: rows,
+        totalPages: limit > 0 ? Math.ceil(count / limit) : 1,
+        currentPage: page ? +page : 1,
+    });
 };
