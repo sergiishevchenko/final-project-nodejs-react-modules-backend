@@ -1,11 +1,12 @@
 import express from 'express';
 
-import { getUser } from '../controllers/usersControllers.js';
+import { getUser, getUserDetails } from '../controllers/usersControllers.js';
 import ctrlWrapper from '../helpers/ctrlWrapper.js';
 import authenticate from '../middlewares/authenticate.js';
 
-const authRouter = express.Router();
+const usersRouter = express.Router();
 
-authRouter.get('/current', authenticate, ctrlWrapper(getUser));
+usersRouter.get('/current', authenticate, ctrlWrapper(getUser));
+usersRouter.get('/:id', authenticate, ctrlWrapper(getUserDetails));
 
-export default authRouter;
+export default usersRouter;

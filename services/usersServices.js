@@ -1,6 +1,7 @@
 import Users from '../db/models/Users.js';
 import UserFollower from "../db/models/UserFollower.js";
 import HttpError from '../helpers/HttpError.js';
+import Recipes from '../db/models/Recipes.js';
 
 const findUser = (query) =>
     Users.findOne({
@@ -19,6 +20,50 @@ export const getUserById = async ({ id }) => {
         email: user.email,
         name: user.name,
         avatar: user.avatar,
+    };
+};
+
+export const getCurrentUserDetails = async ({id }) => {
+  const user = await findUser({ id });
+
+  if (!user) {
+      throw HttpError(404, 'Not found');
+  }
+
+  const recipesCount = await Recipes.count({ where: { ownerId: id } });
+  const followersCount = await UserFollower.count({ where: { userId: id } });
+  const followingCount = await UserFollower.count({ where: { followerId: id } });
+  
+   return {
+       id: user.id,
+       email: user.email,
+       name: user.name,
+       avatar: user.avatar,
+       recipesCount,
+       favoriteRecipesCount: 0, // TODO implement when favorite recipes will be available
+       followersCount, 
+       followingCount,
+   };
+}
+
+
+export const getUserDetailsById = async ({ id }) => {
+    const user = await findUser({ id });
+
+    if (!user) {
+        throw HttpError(404, 'Not found');
+    }
+
+    const recipesCount = await Recipes.count({ where: { ownerId: id } });
+    const followersCount = await UserFollower.count({ where: { userId: id } });
+
+    return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        recipesCount,
+        followersCount,
     };
 };
 
