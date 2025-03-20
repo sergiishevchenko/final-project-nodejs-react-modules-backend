@@ -84,3 +84,17 @@ export const deleteRecipe = async (recipeId, userId) => {
 
     return { message: "Recipe deleted successfully" };
 };
+
+export const getUserRecipesService = async (userId, page = 1, limit = 10) => {
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+    const offset = (page - 1) * limit;
+
+    const { count, rows: recipes } = await Recipes.findAndCountAll({
+        where: { ownerId: userId },
+        limit,
+        offset,
+    });
+
+    return { count, recipes, page, limit };
+};
