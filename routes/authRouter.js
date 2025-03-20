@@ -13,7 +13,6 @@ authRouter.post("/login", validateBody(loginUserSchema), ctrlWrapper(login));
 authRouter.post("/logout", authenticate, ctrlWrapper(logout));
 authRouter.patch("/avatars", authenticate, uploadAvatar.single("avatar"), ctrlWrapper(updateAvatar));
 authRouter.post("/follow", authenticate, validateBody(followUserSchema), ctrlWrapper(follow));
-
 authRouter.post('/unfollow', authenticate, validateBody(unfollowUserSchema), ctrlWrapper(unfollow));
 
 export default authRouter;

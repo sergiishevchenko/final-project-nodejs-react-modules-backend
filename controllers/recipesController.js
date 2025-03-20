@@ -1,12 +1,15 @@
+import { getPopularRecipes, createRecipe, deleteRecipe } from "../services/recipesServices.js";
 import Recipes from "../db/models/Recipes.js";
 import Categories from "../db/models/Categories.js";
 import Ingredients from "../db/models/Ingredients.js";
 import Areas from "../db/models/Areas.js";
 import RecipesIngredients from "../db/models/RecipesIngredients.js";
 import getPagination from "../helpers/getPagination.js";
-import HttpError from "../helpers/HttpError.js";
-import { createRecipe, getPopularRecipes, deleteRecipe } from "../services/recipesServices.js";
 import { Op } from "sequelize";
+import fs from "node:fs/promises";
+import cloudinary from "../helpers/cloudinary.js";
+import HttpError from "../helpers/HttpError.js";
+import { recipeSchema } from "../schemas/recipeSchemas.js";
 
 /**
  * Отримання популярних рецептів
@@ -27,12 +30,48 @@ export const getPopular = async (req, res) => {
 export const addRecipe = async (req, res) => {
     try {
         const { id: userId } = req.user;
-        const newRecipe = await createRecipe(req.body, userId);
+
+        const recipeData = { ...req.body };
+
+        if (typeof recipeData.ingredients === 'string') {
+            try {
+                recipeData.ingredients = JSON.parse(recipeData.ingredients);
+            } catch (error) {
+                throw HttpError(400, "Invalid ingredients format");
+            }
+        }
+
+        const { error } = recipeSchema.validate(recipeData);
+        if (error) {
+            throw HttpError(400, error.message);
+        }
+
+        if (req.file) {
+            const { url } = await cloudinary.uploader.upload(req.file.path, {
+                folder: "thumb-recipes",
+                use_filename: true,
+            });
+            recipeData.thumb = url;
+
+            await fs.unlink(req.file.path);
+        } else if (!recipeData.thumb) {
+            throw HttpError(400, "Recipe thumbnail is required");
+        }
+
+        const newRecipe = await createRecipe(recipeData, userId);
         res.status(201).json(newRecipe);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        if (req.file) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (unlinkError) {
+                console.error("Failed to delete temp file:", unlinkError);
+            }
+        }
+        res.status(error.status || 500).json({ message: error.message });
     }
 };
+
 
 /**
  * Видалення рецепта
