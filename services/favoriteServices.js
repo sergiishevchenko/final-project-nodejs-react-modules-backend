@@ -3,7 +3,7 @@ import FavoriteRecipes from '../db/models/FavoriteRecipes.js';
 import sequelize from '../db/sequelize.js';
 
 export const findOneRecipeById = async (recipeId) => {
-    return Recipes.findByPk(recipeId, { attributes: ['recipeId'] });
+    return Recipes.findByPk(recipeId, { attributes: ['id'] });
 };
 
 export const deleteFavoriteRecipe = async ({ userId, recipeId }) => {
