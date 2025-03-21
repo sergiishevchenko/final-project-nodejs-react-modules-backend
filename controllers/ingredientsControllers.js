@@ -7,4 +7,4 @@ const getAllIngredients = async (req, res) => {
   res.json(result);
 };
 
-export default ctrlWrapper(getAllIngredients);
+export default getAllIngredients;

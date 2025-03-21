@@ -6,4 +6,4 @@ const getAllCategories = async (req, res) => {
     res.json(result);
 };
 
-export default ctrlWrapper(getAllCategories);
+export default getAllCategories;
