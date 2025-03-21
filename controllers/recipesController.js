@@ -15,13 +15,9 @@ import { recipeSchema } from "../schemas/recipeSchemas.js";
  * Отримання популярних рецептів
  */
 export const getPopular = async (req, res) => {
-    try {
-        const { limit = 10 } = req.query;
-        const recipes = await getPopularRecipes(limit);
-        res.json(recipes);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    const { limit = 10 } = req.query;
+    const recipes = await getPopularRecipes(limit);
+    res.json(recipes);
 };
 
 /**
@@ -72,112 +68,90 @@ export const addRecipe = async (req, res) => {
     }
 };
 
-
 /**
  * Видалення рецепта
  */
 export const removeRecipe = async (req, res) => {
-    try {
-        const { id: recipeId } = req.params;
-        const { id: userId } = req.user;
-        const result = await deleteRecipe(recipeId, userId);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    const { id: recipeId } = req.params;
+    const { id: userId } = req.user;
+    const result = await deleteRecipe(recipeId, userId);
+    res.json(result);
 };
           
 /**
  * Отримання рецепта за ID (публічний)
  */
 export const getRecipeById = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-
-        const recipe = await Recipes.findByPk(id, {
-            include: [
-                {
-                    model: Categories,
-                    as: "category",
-                    attributes: ["name"],
-                },
-                {
-                    model: Areas,
-                    as: "area",
-                    attributes: ["name"],
-                },
-                {
-                    model: Ingredients,
-                    through: {
-                        model: RecipesIngredients,
-                        attributes: ["measure"],
-                    },
-                    as: "ingredients",
-                },
-            ],
-        });
-
-        if (!recipe) {
-            throw HttpError(404, "Recipe not found");
-        }
-
-        res.json({
-            status: "success",
-            data: {
-                id: recipe.id,
-                title: recipe.title,
-                category: recipe.category?.name,
-                area: recipe.area?.name,
-                description: recipe.description,
-                instructions: recipe.instructions,
-                thumb: recipe.thumb,
-                time: recipe.time,
-                ingredients: recipe.ingredients.map((ing) => ({
-                    id: ing.id,
-                    name: ing.name,
-                    measure: ing.recipe_ingredient.measure,
-                    img: ing.img,
-                    desc: ing.desc,
-                })),
+    const { id } = req.params;
+    const recipe = await Recipes.findByPk(id, {
+        include: [
+            {
+                model: Categories,
+                as: "category",
+                attributes: ["name"],
             },
-        });
-    } catch (error) {
-        next(error);
+            {
+                model: Areas,
+                as: "area",
+                attributes: ["name"],
+            },
+            {
+                model: Ingredients,
+                through: {
+                    model: RecipesIngredients,
+                    attributes: ["measure"],
+                },
+                as: "ingredients",
+            },
+        ],
+    });
+    if (!recipe) {
+        throw HttpError(404, "Recipe not found");
     }
+    res.json({
+        status: "success",
+        data: {
+            id: recipe.id,
+            title: recipe.title,
+            category: recipe.category?.name,
+            area: recipe.area?.name,
+            description: recipe.description,
+            instructions: recipe.instructions,
+            thumb: recipe.thumb,
+            time: recipe.time,
+            ingredients: recipe.ingredients.map((ing) => ({
+                id: ing.id,
+                name: ing.name,
+                measure: ing.recipe_ingredient.measure,
+                img: ing.img,
+                desc: ing.desc,
+            })),
+        },
+    });
 };
           
-/**
- * Отримання власних рецептів користувача (приватний)
- */
 /**
  * Отримання власних рецептів користувача (приватний) з пагінацією
  */
 export const getMyRecipes = async (req, res, next) => {
-    try {
-        const userId = req.user.id;
-        const { page, limit: size } = req.query;
-        const { limit, offset } = getPagination(page, size); //
-
-        const { count, rows } = await Recipes.findAndCountAll({
-            where: { ownerId: userId },
-            limit,
-            offset,
-        });
-
-        if (!rows.length) {
-            throw HttpError(404, "You have no recipes");
-        }
-
-        res.json({
-            status: "success",
-            totalItems: count,
-            recipes: rows,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page ? +page : 1, 
-        });
-    } catch (error) {
-        next(error);
+    const userId = req.user.id;
+    const { page, limit: size } = req.query;
+    const { limit, offset } = getPagination(page, size); //
+    const { count, rows } = await Recipes.findAndCountAll({
+        where: { ownerId: userId },
+        limit,
+        offset,
+    });
+    if (!rows.length) {
+        throw HttpError(404, "You have no recipes");
     }
+    res.json({
+        status: "success",
+        totalItems: count,
+        recipes: rows,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page ? +page : 1, 
+    });
 };
 
 /**
@@ -240,23 +214,16 @@ export const searchRecipes = async (req, res) => {
 };
 
 export const getUserRecipes = async (req, res, next) => {
-    try {
-        const { userId } = req.params;
-        const { page = 1, limit = 10 } = req.query;
-
-        const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(userId, page, limit);
-
-        if (!recipes.length) {
-            throw HttpError(404, "This user has no recipes");
-        }
-
-        res.json({
-            totalItems: count,
-            recipes: recipes,
-            totalPages: Math.ceil(count / perPage),
-            currentPage: currentPage,
-        });
-    } catch (error) {
-        next(error);
+    const { userId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(userId, page, limit);
+    if (!recipes.length) {
+        throw HttpError(404, "This user has no recipes");
     }
+    res.json({
+        totalItems: count,
+        recipes: recipes,
+        totalPages: Math.ceil(count / perPage),
+        currentPage: currentPage,
+    });
 };
