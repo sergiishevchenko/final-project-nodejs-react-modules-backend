@@ -12,6 +12,8 @@ import areasRouter from './routes/areasRouter.js';
 import usersRouter from './routes/usersRouter.js';
 import favoritesRouter from './routes/favoritesRouter.js';
 import followingRouter from './routes/followingRouter.js';
+import profileFollowersRouter from './routes/profileFollowersRouter.js';
+import followersRouter from './routes/followersRouter.js';
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use('/api/areas', areasRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/favorites', favoritesRouter);
 app.use('/api/following', followingRouter);
+app.use('/api/profile-followers', profileFollowersRouter);
+app.use('/api/followers', followersRouter);
 
 app.use((_, res) => {
     res.status(404).json({ message: 'Route not found' });
