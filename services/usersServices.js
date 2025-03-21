@@ -1,5 +1,6 @@
 import Users from '../db/models/Users.js';
 import UserFollower from "../db/models/UserFollower.js";
+import FavoriteRecipes from '../db/models/FavoriteRecipes.js';
 import HttpError from '../helpers/HttpError.js';
 import Recipes from '../db/models/Recipes.js';
 import getPagination from '../helpers/getPagination.js';
@@ -34,17 +35,18 @@ export const getCurrentUserDetails = async ({id }) => {
   const recipesCount = await Recipes.count({ where: { ownerId: id } });
   const followersCount = await UserFollower.count({ where: { userId: id } });
   const followingCount = await UserFollower.count({ where: { followerId: id } });
+  const favoriteRecipesCount = await FavoriteRecipes.count({ where: { userId: id } });
   
-   return {
-       id: user.id,
-       email: user.email,
-       name: user.name,
-       avatar: user.avatar,
-       recipesCount,
-       favoriteRecipesCount: 0, // TODO implement when favorite recipes will be available
-       followersCount, 
-       followingCount,
-   };
+  return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatar: user.avatar,
+      recipesCount,
+      favoriteRecipesCount,
+      followersCount, 
+      followingCount,
+  };
 }
 
 
