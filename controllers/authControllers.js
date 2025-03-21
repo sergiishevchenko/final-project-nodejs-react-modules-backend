@@ -46,27 +46,6 @@ export const logout = async (req, res) => {
 };
 
 /**
- * Отримання поточного користувача (getCurrentUser)
- */
-export const getCurrentUser = async (req, res, next) => {
-    try {
-        const { email } = req.user;
-        const user = await getUser({ email });
-
-        if (!user) {
-            throw HttpError(404, "User not found");
-        }
-
-        res.json({
-            email: user.email,
-            avatar: user.avatar,
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
  * Оновлення аватарки
  */
 export const updateAvatar = async (req, res) => {
