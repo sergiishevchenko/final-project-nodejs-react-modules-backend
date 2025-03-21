@@ -68,8 +68,6 @@ export const createRecipe = async (recipeData, userId) => {
     };
 };
 
-
-
 export const deleteRecipe = async (recipeId, userId) => {
     const recipe = await Recipes.findOne({
         where: { id: recipeId, ownerId: userId }

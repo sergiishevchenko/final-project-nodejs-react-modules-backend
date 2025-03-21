@@ -1,4 +1,3 @@
-import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import getAreas from "../services/areasServices.js";
 
 const getAllAreas = async (req, res) => {

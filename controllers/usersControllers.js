@@ -5,6 +5,8 @@ import {
     getFollowing,
     getProfileFollowers,
     getFollowers,
+    unfollowUser,
+    followUser,
 } from '../services/usersServices.js';
 
 export const getUser = async (req, res) => {
@@ -20,21 +22,40 @@ export const getUser = async (req, res) => {
 };
 
 export const getUserDetails = async (req, res) => {
-    const { id: requestedUserId } = req.params;
-    const { id: currentUserId } = req.user
+  const { id: requestedUserId } = req.params;
+  const { id: currentUserId } = req.user
 
-    if (+requestedUserId === currentUserId) {
-        const result = await getCurrentUserDetails({ id: currentUserId });
-
-        res.json(result);
-
-        return;
-    }
-
-    const result = await getUserDetailsById({ id: requestedUserId });
+  if (+requestedUserId === currentUserId) {
+    const result = await getCurrentUserDetails({ id: currentUserId });
 
     res.json(result);
-}
+
+    return;
+  }
+
+  const result = await getUserDetailsById({ id: requestedUserId });
+
+  res.json(result);
+};
+
+/**
+ * Функція для підписки на користувача
+ */
+export const follow = async (req, res) => {
+  const followerId = req.user.id;
+  const { userId } = req.body;
+
+  const result = await followUser(followerId, userId);
+  res.status(200).json(result);
+};
+
+export const unfollow = async (req, res) => {
+  const followerId = req.user.id;
+  const { userId } = req.body;
+
+  const result = await unfollowUser(followerId, userId);
+  res.status(200).json(result);
+};
 
 export const getFollowingUsers = async (req, res) => {
   const followerId = req.user.id;

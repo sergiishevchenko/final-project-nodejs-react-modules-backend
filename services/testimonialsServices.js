@@ -1,5 +1,4 @@
 import Testimonials from "../db/models/Testimonials.js";
-import Users from "../db/models/Users.js";
 
 async function getAllTestimonials(page, limit) {
 

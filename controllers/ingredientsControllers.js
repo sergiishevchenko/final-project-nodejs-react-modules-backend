@@ -1,4 +1,3 @@
-import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import getIngredients from "../services/ingredientsServices.js";
 
 const getAllIngredients = async (req, res) => {

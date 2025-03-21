@@ -1,4 +1,3 @@
-import ctrlWrapper from '../helpers/ctrlWrapper.js';
 import getCategories from '../services/categoriesServices.js';
 
 const getAllCategories = async (req, res) => {
