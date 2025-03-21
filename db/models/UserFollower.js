@@ -15,6 +15,9 @@ Users.belongsToMany(Users, {
     otherKey: "userId"
 })
 
+UserFollower.belongsTo(Users, { foreignKey: 'userId', as: 'followedUser' });
+UserFollower.belongsTo(Users, { foreignKey: 'followerId', as: 'follower' });
+
 // UserFollower.sync();
 
 export default UserFollower;

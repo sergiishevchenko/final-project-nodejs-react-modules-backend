@@ -2,6 +2,7 @@ import Users from '../db/models/Users.js';
 import UserFollower from "../db/models/UserFollower.js";
 import HttpError from '../helpers/HttpError.js';
 import Recipes from '../db/models/Recipes.js';
+import getPagination from '../helpers/getPagination.js';
 
 const findUser = (query) =>
     Users.findOne({
@@ -111,3 +112,82 @@ export const unfollowUser = async (followerId, userId) => {
 
     return { message: 'Successfully unfollowed the user' };
 }
+
+export const getFollowing = async ({ followerId, page = 1, limit: size = 10 }) => {
+  const { limit, offset } = getPagination(page, size);
+
+  const { count, rows } = await UserFollower.findAndCountAll({
+    where: { followerId },
+    include: [
+      {
+        model: Users,
+        as: 'followedUser',
+        attributes: ['id', 'email', 'name', 'avatar'],
+      },
+    ],
+    limit,
+    offset,
+  });
+
+  // Якщо користувач не підписаний ні на кого, rows буде порожнім.
+  const following = rows.map(record => record.followedUser);
+
+  return {
+    totalItems: count,
+    following,
+    totalPages: Math.ceil(count / limit),
+    currentPage: +page,
+  };
+};
+
+export const getProfileFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
+  const { limit, offset } = getPagination(page, size);
+
+  const { count, rows } = await UserFollower.findAndCountAll({
+    where: { userId },
+    include: [
+      {
+        model: Users,
+        as: 'follower',
+        attributes: ['id', 'email', 'name', 'avatar'],
+      },
+    ],
+    limit,
+    offset,
+  });
+
+  // Якщо підписників немає, rows буде порожнім.
+  const followers = rows.map(record => record.follower);
+
+  return {
+    totalItems: count,
+    followers,
+    totalPages: Math.ceil(count / limit),
+    currentPage: +page,
+  };
+};
+
+export const getFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
+  const { limit, offset } = getPagination(page, size);
+
+  const { count, rows } = await UserFollower.findAndCountAll({
+    where: { userId },
+    include: [
+      {
+        model: Users,
+        as: 'follower',
+        attributes: ['id', 'email', 'name', 'avatar'],
+      },
+    ],
+    limit,
+    offset,
+  });
+
+  const followers = rows.map(record => record.follower);
+  return {
+    totalItems: count,
+    followers,
+    totalPages: Math.ceil(count / limit),
+    currentPage: +page,
+  };
+};
