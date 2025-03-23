@@ -207,3 +207,21 @@ export const getUserRecipesService = async (userId, page = 1, limit = 10) => {
 
     return { count, recipes, page, limit };
 };
+
+export const findAndCountAllFavoriteRecipes = async ({
+    userId,
+    limit = 100,
+    offset = 0,
+}) => {
+    const { count, rows } = await FavoriteRecipes.findAndCountAll({
+        where: { userId },
+        include: {
+            model: Recipes,
+            as: 'recipe',
+        },
+        limit,
+        offset,
+    });
+
+    return { count, rows: rows.map((fav) => fav.recipe) };
+};

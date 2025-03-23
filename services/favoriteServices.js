@@ -44,21 +44,3 @@ export const findOneFavoriteRecipe = async ({ userId, recipeId }) => {
         where: { userId, recipeId },
     });
 };
-
-export const findAndCountAllFavoriteRecipes = async ({
-    userId,
-    limit = 100,
-    offset = 0,
-}) => {
-    const { count, rows } = await FavoriteRecipes.findAndCountAll({
-        where: { userId },
-        include: {
-            model: Recipes,
-            as: 'recipe',
-        },
-        limit,
-        offset,
-    });
-
-    return { count, rows: rows.map((fav) => fav.recipe) };
-};

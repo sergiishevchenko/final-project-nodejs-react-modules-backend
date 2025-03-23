@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { follow, getFollowersByUserId, getFollowersForProfile, getFollowingUsers, getUser, getUserDetails, getUserRecipes, unfollow } from '../controllers/usersControllers.js';
+import { follow, getFavoriteRecipes, getFollowersByUserId, getFollowersForProfile, getFollowingUsers, getUser, getUserDetails, getUserRecipes, unfollow } from '../controllers/usersControllers.js';
 import ctrlWrapper from '../helpers/ctrlWrapper.js';
 import authenticate from '../middlewares/authenticate.js';
 import { followUserSchema, unfollowUserSchema } from '../schemas/userSchemas.js';
@@ -13,6 +13,7 @@ usersRouter.post("/follow", authenticate, validateBody(followUserSchema), ctrlWr
 usersRouter.post('/unfollow', authenticate, validateBody(unfollowUserSchema), ctrlWrapper(unfollow));
 usersRouter.get('/following', authenticate, ctrlWrapper(getFollowingUsers));
 usersRouter.get('/followers', authenticate, ctrlWrapper(getFollowersForProfile));
+usersRouter.get('/favorites', authenticate, ctrlWrapper(getFavoriteRecipes));
 usersRouter.get("/:id/recipes", authenticate, ctrlWrapper(getUserRecipes));
 usersRouter.get('/:id/followers', ctrlWrapper(getFollowersByUserId));
 usersRouter.get('/:id', authenticate, ctrlWrapper(getUserDetails));

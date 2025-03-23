@@ -1,4 +1,5 @@
 import HttpError from '../helpers/HttpError.js';
+import getPagination from '../helpers/getPagination.js';
 import {
     getUserById,
     getCurrentUserDetails,
@@ -9,6 +10,7 @@ import {
     unfollowUser,
     followUser,
     getUserRecipesService,
+    findAndCountAllFavoriteRecipes,
 } from '../services/usersServices.js';
 
 export const getUser = async (req, res) => {
@@ -96,5 +98,25 @@ export const getUserRecipes = async (req, res, next) => {
         recipes: recipes,
         totalPages: Math.ceil(count / perPage),
         currentPage: currentPage,
+    });
+};
+
+/**
+ * Get user's favorite recipes
+ */
+export const getFavoriteRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const { page, limit: size } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    const { count, rows } = await findAndCountAllFavoriteRecipes({
+        userId,
+        limit,
+        offset,
+    });
+    res.json({
+        totalItems: count,
+        recipes: rows,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page ? +page : 1,
     });
 };

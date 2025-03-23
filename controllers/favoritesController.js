@@ -1,8 +1,6 @@
 import HttpError from '../helpers/HttpError.js';
-import getPagination from '../helpers/getPagination.js';
 import {
     createFavoriteRecipe,
-    findAndCountAllFavoriteRecipes,
     findOneFavoriteRecipe,
     findOneRecipeById,
     deleteFavoriteRecipe,
@@ -34,24 +32,4 @@ export const removeFavoriteRecipe = async (req, res) => {
     }
     await deleteFavoriteRecipe({ userId, recipeId });
     res.json({ message: 'Recipe removed from favorites' });
-};
-
-/**
- * Get user's favorite recipes
- */
-export const getFavoriteRecipes = async (req, res) => {
-    const { id: userId } = req.user;
-    const { page, limit: size } = req.query;
-    const { limit, offset } = getPagination(page, size);
-    const { count, rows } = await findAndCountAllFavoriteRecipes({
-        userId,
-        limit,
-        offset,
-    });
-    res.json({
-        totalItems: count,
-        recipes: rows,
-        totalPages: Math.ceil(count / limit),
-        currentPage: page ? +page : 1,
-    });
 };
