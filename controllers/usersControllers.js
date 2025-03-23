@@ -87,7 +87,6 @@ export const getFollowersByUserId = async (req, res) => {
 
 export const getUserRecipes = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id)
     const { page = 1, limit = 10 } = req.query;
     const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(id, page, limit);
     if (!recipes.length) {

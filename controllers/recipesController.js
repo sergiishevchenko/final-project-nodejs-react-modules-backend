@@ -1,4 +1,4 @@
-import { getPopularRecipes, createRecipe, deleteRecipe } from "../services/recipesServices.js";
+import { getPopularRecipes, createRecipe, deleteRecipe, findOneFavoriteRecipe, findOneRecipeById, createFavoriteRecipe, deleteFavoriteRecipe } from "../services/recipesServices.js";
 import Recipes from "../db/models/Recipes.js";
 import Categories from "../db/models/Categories.js";
 import Ingredients from "../db/models/Ingredients.js";
@@ -211,4 +211,32 @@ export const searchRecipes = async (req, res) => {
         totalPages: limit > 0 ? Math.ceil(count / limit) : 1,
         currentPage: page ? +page : 1,
     });
+};
+
+/**
+ * Add a recipe to user's favorites
+ */
+export const addFavoriteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+    const { id: recipeId } = req.params;
+    const recipe = await findOneRecipeById(recipeId);
+    if (!recipe) {
+        throw HttpError( 404, 'Recipe not found' );
+    }
+    await createFavoriteRecipe({ userId, recipeId });
+    res.status(201).json({ message: 'Recipe added to favorites' });
+};
+
+/**
+ * Remove a recipe from user's favorites
+ */
+export const removeFavoriteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+    const { id: recipeId } = req.params;
+    const favorite = await findOneFavoriteRecipe({ userId, recipeId });
+    if (!favorite) {
+        throw HttpError( 404, 'Recipe not in favorites' );
+    }
+    await deleteFavoriteRecipe({ userId, recipeId });
+    res.json({ message: 'Recipe removed from favorites' });
 };
