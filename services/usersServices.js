@@ -193,3 +193,17 @@ export const getFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
     currentPage: +page,
   };
 };
+
+export const getUserRecipesService = async (userId, page = 1, limit = 10) => {
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+    const offset = (page - 1) * limit;
+
+    const { count, rows: recipes } = await Recipes.findAndCountAll({
+        where: { ownerId: userId },
+        limit,
+        offset,
+    });
+
+    return { count, recipes, page, limit };
+};

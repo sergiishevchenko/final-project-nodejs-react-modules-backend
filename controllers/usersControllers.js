@@ -1,3 +1,4 @@
+import HttpError from '../helpers/HttpError.js';
 import {
     getUserById,
     getCurrentUserDetails,
@@ -7,6 +8,7 @@ import {
     getFollowers,
     unfollowUser,
     followUser,
+    getUserRecipesService,
 } from '../services/usersServices.js';
 
 export const getUser = async (req, res) => {
@@ -79,4 +81,20 @@ export const getFollowersByUserId = async (req, res) => {
   
   const result = await getFollowers({ userId: id, page, limit });
   res.json(result);
+};
+
+export const getUserRecipes = async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id)
+    const { page = 1, limit = 10 } = req.query;
+    const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(id, page, limit);
+    if (!recipes.length) {
+        throw HttpError(404, "This user has no recipes");
+    }
+    res.json({
+        totalItems: count,
+        recipes: recipes,
+        totalPages: Math.ceil(count / perPage),
+        currentPage: currentPage,
+    });
 };

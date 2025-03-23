@@ -1,4 +1,4 @@
-import { getPopularRecipes, createRecipe, deleteRecipe, getUserRecipesService } from "../services/recipesServices.js";
+import { getPopularRecipes, createRecipe, deleteRecipe } from "../services/recipesServices.js";
 import Recipes from "../db/models/Recipes.js";
 import Categories from "../db/models/Categories.js";
 import Ingredients from "../db/models/Ingredients.js";
@@ -15,7 +15,7 @@ import { recipeSchema } from "../schemas/recipeSchemas.js";
  * Отримання популярних рецептів
  */
 export const getPopular = async (req, res) => {
-    const { limit = 10 } = req.query;
+    const { limit = 4 } = req.query;
     const recipes = await getPopularRecipes(limit);
     res.json(recipes);
 };
@@ -210,20 +210,5 @@ export const searchRecipes = async (req, res) => {
         recipes: rows,
         totalPages: limit > 0 ? Math.ceil(count / limit) : 1,
         currentPage: page ? +page : 1,
-    });
-};
-
-export const getUserRecipes = async (req, res, next) => {
-    const { userId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
-    const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(userId, page, limit);
-    if (!recipes.length) {
-        throw HttpError(404, "This user has no recipes");
-    }
-    res.json({
-        totalItems: count,
-        recipes: recipes,
-        totalPages: Math.ceil(count / perPage),
-        currentPage: currentPage,
     });
 };
