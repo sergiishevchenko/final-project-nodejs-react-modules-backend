@@ -1,6 +1,7 @@
 import sequelize from "../sequelize.js";
 import { DataTypes } from "sequelize";
 import { emailRegex } from "../../constants/userConstants.js";
+import Recipes from "./Recipes.js";
 
 /**
  * Cascade (belongsTo) was not added for all entities belonging to User, since user deletion functionality is not part of the requirements
@@ -29,6 +30,8 @@ const Users = sequelize.define("user", {
     },
 
 })
+
+Users.hasMany(Recipes, { foreignKey: "ownerId", as: "recipes" });
 
 // Users.sync();
 
