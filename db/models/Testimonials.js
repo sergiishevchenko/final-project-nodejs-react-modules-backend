@@ -1,5 +1,6 @@
 import sequelize from "../sequelize.js";
 import { DataTypes } from "sequelize";
+import Users from "./Users.js";
 
 const Testimonials = sequelize.define("testimonial", {
     testimonial: {
@@ -13,5 +14,7 @@ const Testimonials = sequelize.define("testimonial", {
 })
 
 // Testimonials.sync();
+
+Testimonials.belongsTo(Users, { foreignKey: "ownerId", as: "owner" });
 
 export default Testimonials;

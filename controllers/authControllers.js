@@ -12,7 +12,6 @@ export const register = async (req, res) => {
     res.status(201).json({
         user: {
             email: result.email,
-            subscription: result.subscription
         }
     });
 };
@@ -27,7 +26,6 @@ export const login = async (req, res) => {
         token: result.token,
         user: {
             email: result.email,
-            subscription: result.subscription,
         }
     });
 };
