@@ -125,6 +125,15 @@ export const getFollowing = async ({ followerId, page = 1, limit: size = 10 }) =
         model: Users,
         as: 'followedUser',
         attributes: ['id', 'email', 'name', 'avatar'],
+        include: [
+          {
+            model: Recipes,
+            as: 'recipes',
+            attributes: ['id', 'title', 'thumb'],
+            limit: 4,
+            separate: true,
+          },
+        ],
       },
     ],
     limit,
@@ -152,6 +161,15 @@ export const getProfileFollowers = async ({ userId, page = 1, limit: size = 10 }
         model: Users,
         as: 'follower',
         attributes: ['id', 'email', 'name', 'avatar'],
+        include: [
+          {
+            model: Recipes,
+            as: 'recipes',
+            attributes: ['id', 'title', 'thumb'],
+            limit: 4,
+            separate: true,
+          },
+        ],
       },
     ],
     limit,
@@ -179,6 +197,15 @@ export const getFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
         model: Users,
         as: 'follower',
         attributes: ['id', 'email', 'name', 'avatar'],
+        include: [
+          {
+            model: Recipes,
+            as: 'recipes',
+            attributes: ['id', 'title', 'thumb'],
+            limit: 4,
+            separate: true,
+          },
+        ],
       },
     ],
     limit,
