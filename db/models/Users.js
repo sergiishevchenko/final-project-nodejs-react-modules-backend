@@ -32,6 +32,7 @@ const Users = sequelize.define("user", {
 })
 
 Users.hasMany(Recipes, { foreignKey: "ownerId", as: "recipes" });
+Recipes.belongsTo(Users, { foreignKey: "ownerId", as: "owner" });
 
 // Users.sync();
 

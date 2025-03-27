@@ -10,6 +10,7 @@ import fs from "node:fs/promises";
 import cloudinary from "../helpers/cloudinary.js";
 import HttpError from "../helpers/HttpError.js";
 import { recipeSchema } from "../schemas/recipeSchemas.js";
+import Users from "../db/models/Users.js";
 
 /**
  * Отримання популярних рецептів
@@ -201,7 +202,13 @@ export const searchRecipes = async (req, res) => {
             
     const { count, rows } = await Recipes.findAndCountAll({
         where: whereClause,
-        include: include.length > 0 ? include : undefined,
+        include: [
+            {
+                model: Users,
+                as: "owner",
+                attributes: ["name", "avatar"],
+            },
+        ],
         limit,
         offset,
     });
