@@ -104,6 +104,11 @@ export const getRecipeById = async (req, res, next) => {
                 },
                 as: "ingredients",
             },
+            {
+                model: Users,
+                as: "owner",
+                attributes: ["name", "avatar"], 
+            }
         ],
     });
     if (!recipe) {
@@ -120,6 +125,11 @@ export const getRecipeById = async (req, res, next) => {
             instructions: recipe.instructions,
             thumb: recipe.thumb,
             time: recipe.time,
+            owner: {
+                ownerId: recipe.ownerId,
+                name: recipe.owner.name,
+                avatar: recipe.owner.avatar,
+            },
             ingredients: recipe.ingredients.map((ing) => ({
                 id: ing.id,
                 name: ing.name,
