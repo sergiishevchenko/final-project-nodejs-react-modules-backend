@@ -85,13 +85,10 @@ export const getFollowersByUserId = async (req, res) => {
   res.json(result);
 };
 
-export const getUserRecipes = async (req, res, next) => {
+export const getUserRecipes = async (req, res) => {
   const { id } = req.params;
     const { page = 1, limit = 10 } = req.query;
     const { count, recipes, page: currentPage, limit: perPage } = await getUserRecipesService(id, page, limit);
-    if (!recipes.length) {
-        throw HttpError(404, "This user has no recipes");
-    }
     res.json({
         totalItems: count,
         recipes: recipes,
