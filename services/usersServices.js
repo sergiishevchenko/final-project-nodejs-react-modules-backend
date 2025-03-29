@@ -4,6 +4,7 @@ import FavoriteRecipes from '../db/models/FavoriteRecipes.js';
 import HttpError from '../helpers/HttpError.js';
 import Recipes from '../db/models/Recipes.js';
 import getPagination from '../helpers/getPagination.js';
+import Sequelize from "../db/sequelize.js";
 
 const findUser = (query) =>
     Users.findOne({
@@ -124,7 +125,21 @@ export const getFollowing = async ({ followerId, page = 1, limit: size = 10 }) =
       {
         model: Users,
         as: 'followedUser',
-        attributes: ['id', 'email', 'name', 'avatar'],
+        attributes: [
+            'id',
+            'email',
+            'name',
+            'avatar',
+            // 👇 Додаємо підрахунок через підзапит COUNT(recipes.id)
+            [
+                Sequelize.literal(`(
+                    SELECT CAST(COUNT(*) AS INTEGER)
+                    FROM recipes
+                    WHERE recipes."ownerId" = "followedUser"."id"
+                  )`),
+                'recipesCount',
+            ],
+        ],
         include: [
           {
             model: Recipes,
@@ -196,7 +211,21 @@ export const getFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
       {
         model: Users,
         as: 'follower',
-        attributes: ['id', 'email', 'name', 'avatar'],
+        attributes: [
+            'id',
+            'email',
+            'name',
+            'avatar',
+            // 👇 Додаємо підрахунок через підзапит COUNT(recipes.id)
+            [
+                Sequelize.literal(`(
+                    SELECT CAST(COUNT(*) AS INTEGER)
+                    FROM recipes
+                    WHERE recipes."ownerId" = "follower"."id"
+                  )`),
+                'recipesCount',
+            ],
+        ],
         include: [
           {
             model: Recipes,
