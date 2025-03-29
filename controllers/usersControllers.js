@@ -11,6 +11,7 @@ import {
     followUser,
     getUserRecipesService,
     findAndCountAllFavoriteRecipes,
+    filterFollowingUserIds,
 } from '../services/usersServices.js';
 
 export const getUser = async (req, res) => {
@@ -78,10 +79,20 @@ export const getFollowersForProfile = async (req, res) => {
 };
 
 export const getFollowersByUserId = async (req, res) => {
+  const userId = req.user.id;
   const { id } = req.params;
   const { page, limit } = req.query;
   
   const result = await getFollowers({ userId: id, page, limit });
+
+  // також потрібно повернути інформацію
+  // за якими із отриманих юзерів слідкує залогинений юзер
+  let followingUserIds = result.followers.map((follower) => follower.id);
+  followingUserIds = followingUserIds.length > 0
+      ? await filterFollowingUserIds({userId, followingUserIds})
+      : [];
+  result['authUserFollowingIds'] = followingUserIds;
+
   res.json(result);
 };
 
