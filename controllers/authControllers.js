@@ -11,6 +11,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
         user: {
+            id: result.id,
             email: result.email,
         }
     });
@@ -25,6 +26,7 @@ export const login = async (req, res) => {
     res.json({
         token: result.token,
         user: {
+            id: result.id,
             email: result.email,
         }
     });
