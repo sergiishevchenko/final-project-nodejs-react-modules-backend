@@ -15,7 +15,7 @@ usersRouter.get('/following', authenticate, ctrlWrapper(getFollowingUsers));
 usersRouter.get('/followers', authenticate, ctrlWrapper(getFollowersForProfile));
 usersRouter.get('/favorites', authenticate, ctrlWrapper(getFavoriteRecipes));
 usersRouter.get("/:id/recipes", authenticate, ctrlWrapper(getUserRecipes));
-usersRouter.get('/:id/followers', ctrlWrapper(getFollowersByUserId));
+usersRouter.get('/:id/followers', authenticate, ctrlWrapper(getFollowersByUserId));
 usersRouter.get('/:id', authenticate, ctrlWrapper(getUserDetails));
 
 export default usersRouter;

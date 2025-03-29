@@ -202,6 +202,19 @@ export const getProfileFollowers = async ({ userId, page = 1, limit: size = 10 }
   };
 };
 
+export const filterFollowingUserIds = async ({ userId, followingUserIds }) => {
+    const rows = await UserFollower.findAll({
+        where: {
+            followerId: userId,
+            userId: followingUserIds,
+        },
+        attributes: ['userId'],
+        raw: true,
+    });
+
+    return rows.map((row) => row.userId);
+}
+
 export const getFollowers = async ({ userId, page = 1, limit: size = 10 }) => {
   const { limit, offset } = getPagination(page, size);
 
